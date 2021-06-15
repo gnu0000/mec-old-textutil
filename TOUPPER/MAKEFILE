@@ -1,0 +1,8 @@
+all: toupper.exe
+
+
+toupper.obj : toupper.c
+   cl /AL /W3 /c /Od /Zip /nologo $*.c
+
+toupper.exe : toupper.obj
+   link $*/CO,,NUL,os2 llibcep implode/nod/noe/nologo,$*.def

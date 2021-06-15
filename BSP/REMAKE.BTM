@@ -1,0 +1,101 @@
+@echo off
+loadbtm on
+if "%1" == "" goto usage
+
+rem --- strip ext ---
+ set file=%@name[%1]
+
+rem --- get ext ---
+iff "%2" NE "" then
+  set ext=%2
+elseiff exist %file.000 then
+  set ext=%@line[%file.000, 0]
+else
+  set ext=EXT
+endiff
+
+rem --- start count ---
+iff "%3" == "" then
+  set cnt=1
+else
+  set cnt=%@eval[%3]
+endiff
+
+rem --- 1st file ---
+gosub cntext
+echo copying %file.%cntext to %file.%ext
+copy %file.%cntext %file.%ext > NUL
+ 
+:loop
+gosub cntext
+if not exist %file.%cntext goto test
+echo copying %file.%cntext to %file.%ext
+copy/b %file.%ext+%file.%cntext > NUL
+goto loop
+
+:cntext
+iff %cnt LT 10 then
+   set cntext=00%cnt
+elseiff %cnt LT 100 then
+   set cntext=0%cnt
+else
+   set cntext=%cnt
+endiff
+set cnt=%@eval[%cnt+1]
+return
+
+:test
+if %@upper[%ext] NE ZIP goto next1
+echo Testing ZIP integrity
+pkunzip -t %file.%ext >NUL
+iff ERRORLEVEL 1 then
+   echo ZIP IN ERROR
+else
+   echo Cleaning up pieces...
+   del %file.0*  >NUL
+endiff
+
+:next1
+if %@upper[%ext] NE ARJ goto next2
+echo Testing ARJ integrity
+arj t %file.%ext >NUL
+iff ERRORLEVEL 1 then
+   echo ARJ IN ERROR
+else
+   echo Cleaning up pieces...
+   del %file.0*  >NUL
+endiff
+
+:next2
+if %@upper[%ext] NE ZOO goto next3
+echo Testing ZOO integrity
+zoo -t %file.%ext
+iff ERRORLEVEL 1 then
+   echo ZOO IN ERROR
+else
+   echo Cleaning up pieces...
+   del %file.0*  >NUL
+endiff
+
+:next3
+
+goto end
+
+
+
+:usage
+echo REMAKE    file unsplitter
+echo ÿ
+echo USAGE:   REMAKE BaseName  [EXT [START]]
+echo ÿ
+echo BaseName is the name of the file pieces.
+echo EXT is the extension to give to the reassembled file
+echo This extension is usually obtained from piece 000
+echo START is the extension of the first piece.
+echo START is usually 001 (000 is always used for file ext)
+echo ÿ
+
+:end
+
+
+

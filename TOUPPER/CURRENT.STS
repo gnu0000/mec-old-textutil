@@ -1,0 +1,13 @@
+[shared-]
+	pmark="E:\WORK\TOUPPER\toupper.c" 33 1
+	version=2
+[debug-]
+	target="e:\work\toupper\toupper.exe"
+[cvp]
+	wndstate=0 1 0 2 0 0 0 0 0 1 254
+	tilestate=1 42 0 80 0 0 0 0 0 11 0 0 0 0 32 0 0 254
+	command=use auto
+	command=n10
+	command=s1
+	command=oc+
+	command=of-

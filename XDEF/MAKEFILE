@@ -1,0 +1,11 @@
+all: xdef.exe
+
+xdef.obj : xdef.c
+    cl /AL /c /Od /W3 /Zi $*.c
+
+stuff.obj : stuff.c
+    cl /AL /c /Od /W3 /Zi $*.c
+
+xdef.exe : xdef.obj stuff.obj
+    link /Co $* stuff c:\lib\setargv.obj/noe/nod,,$*,os2 llibcep,$*
+
